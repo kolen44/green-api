@@ -2,71 +2,114 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Green API Interface</title>
+    <title>Green API Dashboard</title>
     <style>
       body {
-        font-family: Arial;
-        padding: 20px;
+        font-family: 'Courier New', monospace;
+        background-color: #fff;
+        padding: 30px;
+        display: flex;
+        flex-direction: row;
+        gap: 30px;
       }
+
+      .form-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 300px;
+      }
+
       input,
-      button,
-      textarea {
-        display: block;
-        margin: 10px 0;
+      button {
+        border: 1px solid #000;
+        border-radius: 4px;
+        font-size: 14px;
+        padding: 8px;
         width: 100%;
-        max-width: 600px;
+        box-sizing: border-box;
       }
+
+      button {
+        cursor: pointer;
+        background-color: #f8f8f8;
+      }
+
+      .response-section {
+        flex: 1;
+      }
+
+      .response-section label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+      }
+
       textarea {
-        height: 150px;
+        width: 100%;
+        height: 400px;
+        border: 1px solid #000;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        padding: 10px;
+        font-size: 14px;
         resize: none;
+        box-sizing: border-box;
+      }
+
+      .section-block {
+        margin-bottom: 20px;
       }
     </style>
   </head>
   <body>
-    <h1>Green API Dashboard</h1>
+    <div class="form-section">
+      <input id="idInstance" placeholder="idInstance" />
+      <input id="apiToken" placeholder="ApiTokenInstance" />
 
-    <label>ID Instance:</label>
-    <input id="idInstance" placeholder="Enter ID Instance" />
+      <button onclick="callMethod('getSettings')">getSettings</button>
+      <button onclick="callMethod('getStateInstance')">getStateInstance</button>
 
-    <label>API Token:</label>
-    <input id="apiToken" placeholder="Enter API Token" />
+      <div class="section-block">
+        <input id="phone" placeholder="phone" />
+        <input id="message" placeholder="message" />
+        <button onclick="callMethod('sendMessage')">sendMessage</button>
+      </div>
 
-    <label>Phone Number (for sendMessage):</label>
-    <input id="phone" placeholder="e.g. 79991112233" />
+      <div class="section-block">
+        <input id="filePhone" placeholder="phone" />
+        <input id="fileUrl" placeholder="url of image" />
+        <button onclick="callMethod('sendFileByUrl')">sendFileByUrl</button>
+      </div>
+    </div>
 
-    <label>Message Text:</label>
-    <input id="message" placeholder="Enter message" />
-
-    <label>File URL (for sendFileByUrl):</label>
-    <input id="fileUrl" placeholder="e.g. https://example.com/file.jpg" />
-
-    <button onclick="callMethod('getSettings')">getSettings</button>
-    <button onclick="callMethod('getStateInstance')">getStateInstance</button>
-    <button onclick="callMethod('sendMessage')">sendMessage</button>
-    <button onclick="callMethod('sendFileByUrl')">sendFileByUrl</button>
-
-    <label>Response:</label>
-    <textarea id="response" readonly></textarea>
+    <div class="response-section">
+      <label>Ответ:</label>
+      <textarea id="response" readonly></textarea>
+    </div>
 
     <script>
       async function callMethod(method) {
         const idInstance = document.getElementById('idInstance').value;
         const apiToken = document.getElementById('apiToken').value;
         const phone = document.getElementById('phone').value;
+        const filePhone = document.getElementById('filePhone').value;
         const message = document.getElementById('message').value;
         const fileUrl = document.getElementById('fileUrl').value;
+
+        const payload = {
+          idInstance,
+          apiToken,
+          phone,
+          message,
+          fileUrl,
+          filePhone,
+        };
 
         const res = await fetch(`http://localhost:3000/green-api/${method}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            idInstance,
-            apiToken,
-            phone,
-            message,
-            fileUrl,
-          }),
+          body: JSON.stringify(payload),
         });
 
         const data = await res.json();

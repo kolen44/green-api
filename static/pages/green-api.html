@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Green API Interface</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+      }
+      input,
+      button,
+      textarea {
+        display: block;
+        margin: 10px 0;
+        width: 100%;
+        max-width: 600px;
+      }
+      textarea {
+        height: 150px;
+        resize: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Green API Dashboard</h1>
+
+    <label>ID Instance:</label>
+    <input id="idInstance" placeholder="Enter ID Instance" />
+
+    <label>API Token:</label>
+    <input id="apiToken" placeholder="Enter API Token" />
+
+    <label>Phone Number (for sendMessage):</label>
+    <input id="phone" placeholder="e.g. 79991112233" />
+
+    <label>Message Text:</label>
+    <input id="message" placeholder="Enter message" />
+
+    <label>File URL (for sendFileByUrl):</label>
+    <input id="fileUrl" placeholder="e.g. https://example.com/file.jpg" />
+
+    <button onclick="callMethod('getSettings')">getSettings</button>
+    <button onclick="callMethod('getStateInstance')">getStateInstance</button>
+    <button onclick="callMethod('sendMessage')">sendMessage</button>
+    <button onclick="callMethod('sendFileByUrl')">sendFileByUrl</button>
+
+    <label>Response:</label>
+    <textarea id="response" readonly></textarea>
+
+    <script>
+      async function callMethod(method) {
+        const idInstance = document.getElementById('idInstance').value;
+        const apiToken = document.getElementById('apiToken').value;
+        const phone = document.getElementById('phone').value;
+        const message = document.getElementById('message').value;
+        const fileUrl = document.getElementById('fileUrl').value;
+
+        const res = await fetch(`http://localhost:3000/green-api/${method}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            idInstance,
+            apiToken,
+            phone,
+            message,
+            fileUrl,
+          }),
+        });
+
+        const data = await res.json();
+        document.getElementById('response').value = JSON.stringify(
+          data,
+          null,
+          2,
+        );
+      }
+    </script>
+  </body>
+</html>
